@@ -1,0 +1,52 @@
+{
+  "schema":1,"id":"pipe-rush-v1","levels":[
+    {
+      "id":"paid-orders","title":"결제 게이트","subtitle":"01 / FILTER","mission":"결제 완료 주문만, 들어온 순서대로 보내세요.","lesson":"filter는 조건에 맞는 주문을 고릅니다. 순서와 중복은 그대로 유지합니다.","reference":"paid","sourceCode":"const result = [];\nfor (const order of orders) {\n  if (order.paid) result.push(order);\n}",
+      "input":[{"id":"a","menu":"아메리카노","customer":"민","paid":true,"cancelled":false,"price":3000,"quantity":2},{"id":"b","menu":"라테","customer":"수","paid":false,"cancelled":false,"price":4500,"quantity":1},{"id":"c","menu":"아메리카노","customer":"민","paid":true,"cancelled":true,"price":3000,"quantity":1}],
+      "ops":[{"id":"paid","action":"paid","kind":"filter","label":"결제 완료","description":"paid가 true인 주문만 통과","code":".filter(order => order.paid)"},{"id":"active","action":"active","kind":"filter","label":"취소 제외","description":"cancelled가 false인 주문만 통과","code":".filter(order => !order.cancelled)"},{"id":"menu","action":"menu","kind":"map","label":"메뉴 이름","description":"각 주문을 메뉴 이름으로 변환","code":".map(order => order.menu)"}],
+      "solution":["paid"],"keepLoop":false,"cases":[[],[{"id":"x","paid":false,"cancelled":false},{"id":"y","paid":true,"cancelled":true},{"id":"z","paid":true,"cancelled":false}],[{"id":"x","paid":true,"cancelled":false},{"id":"x","paid":true,"cancelled":false}]]
+    },
+    {
+      "id":"menu-names","title":"메뉴 라벨","subtitle":"02 / MAP","mission":"주문마다 메뉴 이름을 한 장씩 출력하세요. 같은 메뉴도 지우면 안 됩니다.","lesson":"map은 각 항목을 바꿉니다. 세 주문이 들어오면 세 결과가 나옵니다.","reference":"menu","sourceCode":"const result = [];\nfor (const order of orders) {\n  result.push(order.menu);\n}",
+      "input":[{"id":"a","menu":"아메리카노","customer":"민","paid":true,"cancelled":false,"price":3000,"quantity":2},{"id":"b","menu":"라테","customer":"수","paid":false,"cancelled":false,"price":4500,"quantity":1},{"id":"c","menu":"아메리카노","customer":"민","paid":true,"cancelled":true,"price":3000,"quantity":1}],
+      "ops":[{"id":"menu","action":"menu","kind":"map","label":"메뉴 이름","description":"각 주문을 메뉴 이름으로 변환","code":".map(order => order.menu)"},{"id":"paid","action":"paid","kind":"filter","label":"결제 완료","description":"paid가 true인 주문만 통과","code":".filter(order => order.paid)"},{"id":"customer","action":"customer","kind":"map","label":"손님 이름","description":"각 주문을 손님 이름으로 변환","code":".map(order => order.customer)"}],
+      "solution":["menu"],"keepLoop":false,"cases":[[],[{"id":"x","menu":"라테","customer":"민","paid":false},{"id":"y","menu":"라테","customer":"수","paid":true},{"id":"z","menu":"차","customer":"민","paid":true}]]
+    },
+    {
+      "id":"paid-customers","title":"픽업 명단","subtitle":"03 / FILTER → MAP","mission":"결제한 손님의 이름만 뽑으세요. 같은 이름도 주문 수만큼 남겨야 합니다.","lesson":"먼저 주문을 고르고, 그다음 이름으로 바꿉니다. 이름으로 바꾸면 결제 정보는 사라집니다.","reference":"paid-customer","sourceCode":"const result = [];\nfor (const order of orders) {\n  if (order.paid) result.push(order.customer);\n}",
+      "input":[{"id":"a","menu":"아메리카노","customer":"민","paid":true,"cancelled":false,"price":3000,"quantity":2},{"id":"b","menu":"라테","customer":"수","paid":false,"cancelled":false,"price":4500,"quantity":1},{"id":"c","menu":"아메리카노","customer":"민","paid":true,"cancelled":true,"price":3000,"quantity":1}],
+      "ops":[{"id":"paid","action":"paid","kind":"filter","label":"결제 완료","description":"paid가 true인 주문만 통과","code":".filter(order => order.paid)"},{"id":"customer","action":"customer","kind":"map","label":"손님 이름","description":"각 주문을 손님 이름으로 변환","code":".map(order => order.customer)"},{"id":"menu","action":"menu","kind":"map","label":"메뉴 이름","description":"각 주문을 메뉴 이름으로 변환","code":".map(order => order.menu)"}],
+      "solution":["paid","customer"],"keepLoop":false,"cases":[[],[{"id":"x","paid":true,"customer":"가"},{"id":"y","paid":false,"customer":"나"},{"id":"z","paid":true,"customer":"가"}]]
+    },
+    {
+      "id":"order-amounts","title":"한 잔이 두 잔으로","subtitle":"04 / MAP","mission":"각 주문의 금액을 계산하세요. 단가에 수량을 곱합니다.","lesson":"단가와 주문 금액은 다릅니다. map으로 주문 하나를 금액 하나로 바꿉니다.","reference":"amount","sourceCode":"const result = [];\nfor (const order of orders) {\n  result.push(order.price * order.quantity);\n}",
+      "input":[{"id":"a","menu":"아메리카노","customer":"민","paid":true,"cancelled":false,"price":3000,"quantity":2},{"id":"b","menu":"라테","customer":"수","paid":false,"cancelled":false,"price":4500,"quantity":1},{"id":"c","menu":"아메리카노","customer":"민","paid":true,"cancelled":true,"price":3000,"quantity":1}],
+      "ops":[{"id":"amount","action":"amount","kind":"map","label":"단가 × 수량","description":"각 주문의 전체 금액 계산","code":".map(order => order.price * order.quantity)"},{"id":"price","action":"price","kind":"map","label":"단가만","description":"수량을 반영하지 않은 단가","code":".map(order => order.price)"},{"id":"quantity","action":"quantity","kind":"map","label":"수량만","description":"각 주문의 수량 추출","code":".map(order => order.quantity)"}],
+      "solution":["amount"],"keepLoop":false,"cases":[[],[{"id":"x","price":1000,"quantity":0},{"id":"y","price":2500,"quantity":3},{"id":"z","price":2500,"quantity":3}]]
+    },
+    {
+      "id":"total-sales","title":"하나의 합계","subtitle":"05 / MAP → REDUCE","mission":"모든 주문의 금액을 합치세요. 주문이 없으면 합계는 0입니다.","lesson":"reduce는 여러 값을 하나로 합칩니다. 초기값 0 덕분에 빈 배열도 안전합니다.","reference":"total","sourceCode":"let result = 0;\nfor (const order of orders) {\n  result += order.price * order.quantity;\n}",
+      "input":[{"id":"a","menu":"아메리카노","customer":"민","paid":true,"cancelled":false,"price":3000,"quantity":2},{"id":"b","menu":"라테","customer":"수","paid":false,"cancelled":false,"price":4500,"quantity":1},{"id":"c","menu":"아메리카노","customer":"민","paid":true,"cancelled":true,"price":3000,"quantity":1}],
+      "ops":[{"id":"amount","action":"amount","kind":"map","label":"단가 × 수량","description":"각 주문의 전체 금액 계산","code":".map(order => order.price * order.quantity)"},{"id":"sum","action":"sum","kind":"reduce","label":"합계 · 초기값 0","description":"숫자 배열을 합계 하나로","code":".reduce((total, amount) => total + amount, 0)"},{"id":"price","action":"price","kind":"map","label":"단가만","description":"수량을 반영하지 않은 단가","code":".map(order => order.price)"}],
+      "solution":["amount","sum"],"keepLoop":false,"cases":[[],[{"id":"x","price":2000,"quantity":0}],[{"id":"x","price":2500,"quantity":3},{"id":"y","price":2500,"quantity":3}]]
+    },
+    {
+      "id":"active-sales","title":"취소 주문 차단","subtitle":"06 / FILTER → MAP → REDUCE","mission":"취소되지 않은 주문의 매출만 합산하세요. 결제 여부와 취소 여부를 구분하세요.","lesson":"고르기 → 바꾸기 → 합치기. 각 단계가 하던 일을 드러내되 원래 결과를 보존합니다.","reference":"active-total","sourceCode":"let result = 0;\nfor (const order of orders) {\n  if (!order.cancelled) result += order.price * order.quantity;\n}",
+      "input":[{"id":"a","menu":"아메리카노","customer":"민","paid":true,"cancelled":false,"price":3000,"quantity":2},{"id":"b","menu":"라테","customer":"수","paid":false,"cancelled":false,"price":4500,"quantity":1},{"id":"c","menu":"아메리카노","customer":"민","paid":true,"cancelled":true,"price":3000,"quantity":1}],
+      "ops":[{"id":"active","action":"active","kind":"filter","label":"취소 제외","description":"cancelled가 false인 주문만 통과","code":".filter(order => !order.cancelled)"},{"id":"amount","action":"amount","kind":"map","label":"단가 × 수량","description":"각 주문의 전체 금액 계산","code":".map(order => order.price * order.quantity)"},{"id":"sum","action":"sum","kind":"reduce","label":"합계 · 초기값 0","description":"숫자 배열을 합계 하나로","code":".reduce((total, amount) => total + amount, 0)"},{"id":"paid","action":"paid","kind":"filter","label":"결제 완료","description":"paid가 true인 주문만 통과","code":".filter(order => order.paid)"}],
+      "solution":["active","amount","sum"],"keepLoop":false,"cases":[[],[{"id":"x","cancelled":true,"paid":true,"price":2000,"quantity":3}],[{"id":"x","cancelled":false,"paid":false,"price":1500,"quantity":2},{"id":"y","cancelled":true,"paid":true,"price":7000,"quantity":1}]]
+    },
+    {
+      "id":"discount-cutoff","title":"순서의 함정","subtitle":"07 / ORDER MATTERS","mission":"먼저 20% 할인하고, 할인 후 금액이 5,000원 이상인 주문만 남기세요.","lesson":"할인과 선별의 순서를 바꾸면 결과가 달라집니다. 경계 금액과 반례를 확인하세요.","reference":"discount-threshold","discountRate":0.8,"threshold":5000,"sourceCode":"const result = [];\nfor (const order of orders) {\n  const discounted = {...order, amount: order.amount * 0.8};\n  if (discounted.amount >= 5000) result.push(discounted);\n}",
+      "input":[{"id":"a","amount":5000},{"id":"b","amount":7000},{"id":"c","amount":6250}],
+      "ops":[{"id":"discount","action":"discount","kind":"map","label":"20% 할인","description":"amount를 0.8배로 바꾼 새 주문","code":".map(order => ({...order, amount: order.amount * 0.8}))"},{"id":"threshold","action":"threshold","kind":"filter","label":"5,000원 이상","description":"현재 amount가 5000 이상인 주문","code":".filter(order => order.amount >= 5000)"},{"id":"extract","action":"extract","kind":"map","label":"금액만 추출","description":"주문을 금액 숫자로 변환","code":".map(order => order.amount)"}],
+      "solution":["discount","threshold"],"keepLoop":false,"cases":[[],[{"id":"x","amount":6249},{"id":"y","amount":6250},{"id":"z","amount":5000}],[{"id":"x","amount":7000},{"id":"x","amount":7000}]]
+    },
+    {
+      "id":"stock-sequence","title":"마지막 재고","subtitle":"08 / KEEP THE LOOP","mission":"재고 3개. 주문 순서대로 재고를 확인하고 승인한 만큼 차감하세요. 제공된 카드로 보존할 수 있을까요?","lesson":"이 카드들은 앞 주문의 차감을 다음 주문에 전달하지 못합니다. 반복문을 유지하세요. 상태를 전달하는 다른 reduce 설계는 가능합니다.","reference":"stock","stock":3,"sourceCode":"let remaining = 3;\nconst accepted = [];\nfor (const order of orders) {\n  if (order.quantity <= remaining) {\n    accepted.push(order.id);\n    remaining -= order.quantity;\n  }\n}\nconst result = {accepted, remaining};",
+      "input":[{"id":"a","quantity":2},{"id":"b","quantity":2}],
+      "ops":[{"id":"stock-check","action":"stock-check","kind":"filter","label":"최초 재고와 비교","description":"각 주문을 최초 재고 3과 따로 비교 · 차감 없음","code":".filter(order => order.quantity <= 3)"},{"id":"ids","action":"ids","kind":"map","label":"승인 ID 추출","description":"각 주문의 id만 남김","code":".map(order => order.id)"},{"id":"quantity","action":"quantity","kind":"map","label":"수량만","description":"각 주문의 수량 추출","code":".map(order => order.quantity)"}],
+      "solution":[],"keepLoop":true,"cases":[[],[{"id":"x","quantity":2},{"id":"y","quantity":2},{"id":"z","quantity":1}],[{"id":"x","quantity":4},{"id":"y","quantity":3},{"id":"z","quantity":0}]]
+    }
+  ]
+}
